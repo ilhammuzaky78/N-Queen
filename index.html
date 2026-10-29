@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backtracking vs Forward Checking</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div class="eyebrow">KECERDASAN BUATAN · CSP</div>
+      <h1>Backtracking <span>vs</span><br>Forward Checking</h1>
+      <p>Visualisasi dan perbandingan algoritma untuk menyelesaikan masalah N-Queens.</p>
+    </header>
+
+    <main>
+      <section class="panel controls">
+        <div class="section-heading">
+          <div>
+            <h2>Pengaturan Simulasi</h2>
+            <p>Atur papan dan jalankan algoritma.</p>
+          </div>
+          <span class="badge" id="statusBadge">SIAP</span>
+        </div>
+
+        <div class="control-grid">
+          <label class="field">
+            <span>Ukuran papan (N)</span>
+            <select id="boardSize">
+              <option value="4">4 × 4</option>
+              <option value="5">5 × 5</option>
+              <option value="6">6 × 6</option>
+              <option value="7">7 × 7</option>
+              <option value="8" selected>8 × 8</option>
+              <option value="9">9 × 9</option>
+              <option value="10">10 × 10</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Algoritma</span>
+            <select id="algorithm">
+              <option value="backtracking">Backtracking</option>
+              <option value="forward">Backtracking + Forward Checking</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Kecepatan animasi</span>
+            <select id="speed">
+              <option value="500">Lambat</option>
+              <option value="180" selected>Normal</option>
+              <option value="40">Cepat</option>
+              <option value="0">Sangat cepat</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="startBtn" class="button primary">▶ Mulai Algoritma</button>
+          <button id="pauseBtn" class="button secondary" disabled>Ⅱ Jeda</button>
+          <button id="resetBtn" class="button ghost">↻ Reset</button>
+        </div>
+        <p class="hint">N-Queens menempatkan N ratu sehingga tidak ada dua ratu yang saling menyerang.</p>
+      </section>
+
+      <section class="workspace">
+        <section class="panel board-panel">
+          <div class="section-heading">
+            <div>
+              <h2>Papan N-Queens</h2>
+              <p id="boardCaption">Papan 8 × 8 · belum dimulai</p>
+            </div>
+            <span class="live-dot">VISUALISASI</span>
+          </div>
+          <div class="board-wrap">
+            <div id="board" class="board" aria-label="Papan N-Queens"></div>
+          </div>
+          <div class="legend">
+            <span><i class="legend-box current"></i> Posisi yang sedang diperiksa</span>
+            <span><i class="legend-box queen"></i> Ratu ditempatkan</span>
+            <span><i class="legend-box rejected"></i> Posisi tidak valid</span>
+          </div>
+          <div id="message" class="message">Pilih pengaturan, lalu tekan Mulai Algoritma.</div>
+        </section>
+
+        <aside class="side-column">
+          <section class="panel stats-panel">
+            <h2>Statistik Proses</h2>
+            <div class="stat"><span>Langkah diperiksa</span><strong id="stepsValue">0</strong></div>
+            <div class="stat"><span>Backtrack</span><strong id="backtracksValue">0</strong></div>
+            <div class="stat"><span>Waktu proses</span><strong id="timeValue">0 ms</strong></div>
+            <div class="stat"><span>Ratu ditempatkan</span><strong id="queensValue">0 / 8</strong></div>
+            <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+            <p id="progressText" class="progress-text">Menunggu proses dimulai</p>
+          </section>
+
+          <section class="panel explanation">
+            <h2>Algoritma Aktif</h2>
+            <div id="algorithmTitle" class="algorithm-title">Backtracking</div>
+            <p id="algorithmDescription">Mencoba posisi ratu satu per satu. Jika konflik ditemukan, algoritma kembali ke baris sebelumnya dan mencoba posisi lain.</p>
+            <div class="divider"></div>
+            <h3>Perbedaan utama</h3>
+            <p><strong>Backtracking:</strong> mendeteksi konflik saat menempatkan ratu berikutnya.</p>
+            <p><strong>Forward Checking:</strong> setelah menempatkan ratu, menghapus pilihan yang tidak mungkin dari baris berikutnya. Jika suatu baris kehabisan pilihan, proses mundur lebih cepat.</p>
+          </section>
+        </aside>
+      </section>
+
+      <section class="panel comparison">
+        <div class="section-heading">
+          <div>
+            <h2>Perbandingan Algoritma</h2>
+            <p>Jalankan kedua metode untuk membandingkan hasil pada ukuran papan yang sama.</p>
+          </div>
+          <button id="compareBtn" class="button primary">⚖ Bandingkan Keduanya</button>
+        </div>
+        <div class="comparison-grid">
+          <article class="compare-card">
+            <div class="compare-head"><span>01</span><h3>Backtracking</h3></div>
+            <div class="compare-stat"><span>Langkah</span><strong id="btSteps">—</strong></div>
+            <div class="compare-stat"><span>Backtrack</span><strong id="btBacktracks">—</strong></div>
+            <div class="compare-stat"><span>Waktu</span><strong id="btTime">—</strong></div>
+            <div id="btResult" class="result-label">Belum dijalankan</div>
+          </article>
+          <article class="compare-card featured">
+            <div class="compare-head"><span>02</span><h3>Backtracking + Forward Checking</h3></div>
+            <div class="compare-stat"><span>Langkah</span><strong id="fcSteps">—</strong></div>
+            <div class="compare-stat"><span>Backtrack</span><strong id="fcBacktracks">—</strong></div>
+            <div class="compare-stat"><span>Waktu</span><strong id="fcTime">—</strong></div>
+            <div id="fcResult" class="result-label">Belum dijalankan</div>
+          </article>
+        </div>
+        <p id="comparisonSummary" class="comparison-summary">Hasil perbandingan akan muncul di sini.</p>
+      </section>
+    </main>
+    <footer>Proyek Kecerdasan Buatan · Simulasi Constraint Satisfaction Problem</footer>
+  </div>
+</body>
+</html>
